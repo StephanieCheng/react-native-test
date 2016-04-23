@@ -22,6 +22,10 @@ var Swipeout = require('react-native-swipeout');
 import FacebookTabBar from './FacebookTabBar';
 var ScrollableTabView = require('react-native-scrollable-tab-view');
 
+// Infinite Scroll
+var InfiniteScrollView = require('react-native-infinite-scroll-view');
+
+// Router
 var Router = require('./router.js');
 
 class sessionScene extends React.Component {
@@ -57,6 +61,15 @@ class sessionScene extends React.Component {
         suggestedComments: this.state.suggestedComments.cloneWithRows(dummySuggestedComments)
       });
     }, 500);
+  }
+
+  handleLeftPress(data) {
+    console.log('handling left press', data.id);
+  }
+
+  loadMore() {
+    AlertIOS.alert('Loading more!');
+    // console.log('')
   }
 
   render() {
@@ -113,6 +126,23 @@ class sessionScene extends React.Component {
     //     style={styles.container} />
     // );
 
+    // 2. SwipeListView: single list, no tabs
+    // return(
+    //   <SwipeListView
+    //     dataSource={this.state.comments}
+    //     renderRow={this.renderRow.bind(this)}
+    //     renderHiddenRow={ data => (
+    //         <View style={styles.rowBack}>
+    //             <Text style={styles.rowButtonLeft}>Left</Text>
+    //             <Text style={styles.rowButtonRight}>Right1</Text>
+    //             <Text style={styles.rowButtonRight}>Right2</Text>
+    //         </View>
+    //     )}
+    //     leftOpenValue={100}
+    //     rightOpenValue={-200}
+    //     style={styles.container} />
+    // );
+
     // 3. Scrollable with swipe list view
     return (
       <ScrollableTabView
@@ -127,7 +157,11 @@ class sessionScene extends React.Component {
           renderRow={this.renderRow.bind(this)}
           renderHiddenRow={ data => (
             <View style={styles.rowBack}>
-              <Text style={[styles.button, styles.buttonLeft]}>Left</Text>
+              <Text
+                style={[styles.button, styles.buttonLeft]}
+                onPress={this.handleLeftPress.bind(this, data)}>
+                Left
+              </Text>
               <Text style={[styles.button, styles.buttonRight]}>Right1</Text>
               <Text style={[styles.button, styles.buttonRight]}>Right2</Text>
             </View>
@@ -137,6 +171,13 @@ class sessionScene extends React.Component {
           style={styles.container} />
         <SwipeListView
           tabLabel="ALL"
+
+          // Infinite scroll
+          renderScrollComponent={props => <InfiniteScrollView {...props} />}
+          onLoadMoreAsync={this.loadMore.bind(this)}
+          canLoadMore={true}
+          distanceToLoadMore={10}
+
           dataSource={this.state.comments}
           renderRow={this.renderRow.bind(this)}
           renderHiddenRow={ data => (
@@ -163,7 +204,11 @@ class sessionScene extends React.Component {
     //       renderRow={this.renderRow.bind(this)}
     //       renderHiddenRow={ data => (
     //         <View style={styles.rowBack}>
-    //           <Text style={[styles.button, styles.buttonLeft]}>Left</Text>
+    //           <Text
+    //             style={[styles.button, styles.buttonLeft]}
+    //             onPress={this.handleLeftPress.bind(this)}>
+    //             Left
+    //           </Text>
     //           <Text style={[styles.button, styles.buttonRight]}>Right1</Text>
     //           <Text style={[styles.button, styles.buttonRight]}>Right2</Text>
     //         </View>
@@ -186,23 +231,6 @@ class sessionScene extends React.Component {
     //       rightOpenValue={-200}
     //       style={styles.container} />
     //   </ScrollableTabView>
-    // );
-
-    // 2. SwipeListView: single list, no tabs
-    // return(
-    //   <SwipeListView
-    //     dataSource={this.state.comments}
-    //     renderRow={this.renderRow.bind(this)}
-    //     renderHiddenRow={ data => (
-    //         <View style={styles.rowBack}>
-    //             <Text style={styles.rowButtonLeft}>Left</Text>
-    //             <Text style={styles.rowButtonRight}>Right1</Text>
-    //             <Text style={styles.rowButtonRight}>Right2</Text>
-    //         </View>
-    //     )}
-    //     leftOpenValue={100}
-    //     rightOpenValue={-200}
-    //     style={styles.container} />
     // );
   }
 
